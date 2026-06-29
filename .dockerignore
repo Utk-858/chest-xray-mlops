@@ -1,0 +1,28 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python bytecode and caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git repository metadata
+.git/
+.gitignore
+
+# Model binary weights (crucial: weight binaries are not bundled)
+models/*.pth
+models/**/*.pth
+*.pth
+
+# Temporary logs and config cache files
+*.log
+.env
+.agents/
+AGENTS.md

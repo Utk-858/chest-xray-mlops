@@ -1,0 +1,29 @@
+# Python byte-code / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments & virtualenvs
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# IDEs & System files
+.vscode/
+.idea/
+.DS_Store
+
+# Large Model weights (prevent committing .pth, .pt, .onnx files)
+models/*.pth
+models/*.pt
+models/*.onnx
+models/*.bin
+!models/.gitkeep

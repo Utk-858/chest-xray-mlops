@@ -1,0 +1,23 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  standard:
+    format: "%(asctime)s [%(levelname)s] %(name)s [%(request_id)s] - %(filename)s:%(lineno)d - %(message)s"
+
+filters:
+  request_id:
+    (): src.core.logging.RequestIdFilter
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: standard
+    stream: ext://sys.stdout
+    filters: [request_id]
+
+loggers:
+  "":
+    handlers: [console]
+    level: INFO
+    propagate: true

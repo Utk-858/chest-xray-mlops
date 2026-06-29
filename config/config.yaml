@@ -1,0 +1,24 @@
+app:
+  name: "chest-xray-mlops"
+  version: "1.0.0"
+  host: "0.0.0.0"
+  port: 8000
+  debug: false
+
+active_model: "resnet50"  #default
+
+models:
+  resnet50:
+    name: "chest_xray_resnet50"
+    version: "v1"
+    path: "models/chest_xray_resnet50_v1.pth"
+    input_size: [224, 224]
+
+inference:
+  device: "auto"  # options: 'cuda', 'cpu', 'mps', 'auto'
+  confidence_threshold: 0.5
+  batch_size: 1
+
+logging:
+  config_path: "config/logging.yaml"
+  level: "INFO"
