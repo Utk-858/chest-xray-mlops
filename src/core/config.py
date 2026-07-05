@@ -22,6 +22,7 @@ class ModelConfig(BaseModel):
     version: str
     path: str
     input_size: tuple[int, int] = (224, 224)
+    num_classes: int
 
 class InferenceConfig(BaseModel):
     device: str = Field(default="auto", pattern="^(cpu|cuda|mps|auto)$")
