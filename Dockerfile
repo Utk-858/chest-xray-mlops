@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.9-slim
 
 # Enforce Python environment optimizations
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -11,14 +11,16 @@ WORKDIR /app
 RUN groupadd -r appgroup && useradd -r -g appgroup -d /app -s /sbin/nologin appuser
 
 # Install python dependencies
-COPY requirements.txt /app/
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+COPY requirements/ /app/requirements/
+
+RUN python -m pip install --upgrade pip && \
+    python -m pip install \
+        --extra-index-url https://download.pytorch.org/whl/cpu \
+        -r /app/requirements/prod.txt
 
 # Copy project modules (excluding weight binaries via .dockerignore)
 COPY src/ /app/src/
 COPY config/ /app/config/
-COPY docs/ /app/docs/
 
 # Pre-create model mounting directory and adjust permissions
 RUN mkdir -p /app/models && chown -R appuser:appgroup /app
