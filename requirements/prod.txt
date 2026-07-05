@@ -6,3 +6,4 @@ python-multipart
 PyYAML
 timm
 uvicorn
+pydantic-settings
