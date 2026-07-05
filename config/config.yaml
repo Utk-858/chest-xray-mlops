@@ -11,8 +11,9 @@ models:
   resnet50:
     name: "chest_xray_resnet50"
     version: "v1"
-    path: "models/chest_xray_resnet50_v1.pth"
+    path: "/app/models/chest_xray_resnet50_v1.pth"
     input_size: [224, 224]
+    num_classes: 3
 
 inference:
   device: "auto"  # options: 'cuda', 'cpu', 'mps', 'auto'

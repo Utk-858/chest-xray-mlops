@@ -35,11 +35,11 @@ def load_pytorch_model(model_config: ModelConfig, device_setting: str) -> torch.
     # Architecture registry mapping
     model_name_lower = model_config.name.lower()
     if "resnet50" in model_name_lower:
-        model = tv_models.resnet50(num_classes=2)
+        model = tv_models.resnet50(num_classes=model_config.num_classes)
     elif "densenet121" in model_name_lower:
-        model = tv_models.densenet121(num_classes=2)
+        model = tv_models.densenet121(num_classes=model_config.num_classes)
     elif "resnet18" in model_name_lower:
-        model = tv_models.resnet18(num_classes=2)
+        model = tv_models.resnet18(num_classes=model_config.num_classes)
     else:
         logger.warning(
             f"Unrecognized model architecture target '{model_config.name}'. "
