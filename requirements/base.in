@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-multipart
+PyYAML
+python-json-logger
+Pillow
+torch
+torchvision
+timm

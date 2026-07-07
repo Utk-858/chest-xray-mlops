@@ -8,6 +8,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Create a secure non-root system group and user
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
 RUN groupadd -r appgroup && useradd -r -g appgroup -d /app -s /sbin/nologin appuser
 
 # Install python dependencies

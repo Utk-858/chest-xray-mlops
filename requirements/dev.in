@@ -1,0 +1,8 @@
+-r base.in
+
+pytest
+pytest-cov
+httpx
+black
+ruff
+mypy
