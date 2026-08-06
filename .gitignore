@@ -27,3 +27,5 @@ models/*.pt
 models/*.onnx
 models/*.bin
 !models/.gitkeep
+
+./load-testing.log
