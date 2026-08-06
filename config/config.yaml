@@ -13,7 +13,8 @@ models:
     version: "v1"
     path: "/app/models/chest_xray_resnet50_v1.pth"
     input_size: [224, 224]
-    num_classes: 3
+    num_classes: 2
+
 
 inference:
   device: "auto"  # options: 'cuda', 'cpu', 'mps', 'auto'
@@ -23,3 +24,7 @@ inference:
 logging:
   config_path: "config/logging.yaml"
   level: "INFO"
+
+metrics:
+  enabled: true
+

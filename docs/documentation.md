@@ -149,3 +149,35 @@ This document tracks the incremental design choices, implementation steps, and a
     *   **Graceful Partial Fault Tolerance**: Isolated preprocessing and logit postprocessing checkpoints individually. This guarantees that one corrupted or invalid image upload does not crash or invalidate the entire batch result collection.
     *   **Extensible Batch Performance**: Leveraged `torch.stack` to construct unified 4D tensors for model forward passes. This enables hardware-optimized vectorized computation, laying the foundation for future GPU/MPS throughput enhancements.
     *   **Secure Containerization Boundaries**: Packaged the serving app using standard system user permissions (`appuser` / `appgroup`) and locked down copy layouts to prevent accidental inclusions of large weight binaries (`.pth` files) inside Docker layers.
+
+---
+
+## Phase 2: Observability
+
+### Step 11: Prometheus Metrics Integration
+*   **What was done**:
+    *   Added dependency `prometheus-client` to [requirements/prod.in](file:///Users/utkarshbansal/chest-xray-mlops/requirements/prod.in), [requirements/prod.txt](file:///Users/utkarshbansal/chest-xray-mlops/requirements/prod.txt), and root [requirements.txt](file:///Users/utkarshbansal/chest-xray-mlops/requirements.txt).
+    *   Exposed `MetricsConfig` and enabled state under [src/core/config.py](file:///Users/utkarshbansal/chest-xray-mlops/src/core/config.py) and [config/config.yaml](file:///Users/utkarshbansal/chest-xray-mlops/config/config.yaml).
+    *   Created metrics wrapper helpers inside [src/metrics/prometheus.py](file:///Users/utkarshbansal/chest-xray-mlops/src/metrics/prometheus.py) to manage Counters and Histograms.
+    *   Instrumented pipeline latencies (preprocessing, inference, postprocessing) within [src/services/inference.py](file:///Users/utkarshbansal/chest-xray-mlops/src/services/inference.py).
+    *   Added `record_api_metrics` middleware and registered the `/metrics` endpoint in [src/main.py](file:///Users/utkarshbansal/chest-xray-mlops/src/main.py) to parse scraping queries.
+    *   Implemented integration tests in [tests/integration/test_metrics.py](file:///Users/utkarshbansal/chest-xray-mlops/tests/integration/test_metrics.py).
+*   **Why we did it**:
+    *   **Decoupled Telemetry Layer**: Formulated the `src/metrics` library to house metric definitions, keeping route controllers and core inference logic decoupled from Prometheus client implementation.
+    *   **Granular Performance Breakdowns**: Separate preprocessing, prediction, and postprocessing latency tracing gives operators clear insight into where application performance lags or bottlenecks occur.
+    *   **Flexible Operational Control**: Conditional route registration and environment parameter overrides allow administrators to completely silence metric scrapes in dev testing or local execution.
+
+---
+
+### Step 12: Telemetry Stack Provisioning
+*   **What was done**:
+    *   Updated [docker-compose.yml](file:///Users/utkarshbansal/chest-xray-mlops/docker-compose.yml) to add `prometheus` (version `v2.53.0`) and `grafana` (version `11.0.0`) containers.
+    *   Created [config/prometheus.yml](file:///Users/utkarshbansal/chest-xray-mlops/config/prometheus.yml) scrape settings targeting the API at 5-second intervals.
+    *   Wrote [grafana/provisioning/datasources/datasource.yaml](file:///Users/utkarshbansal/chest-xray-mlops/grafana/provisioning/datasources/datasource.yaml) mapping default Prometheus datasource parameters.
+    *   Wrote [grafana/provisioning/dashboards/dashboard.yaml](file:///Users/utkarshbansal/chest-xray-mlops/grafana/provisioning/dashboards/dashboard.yaml) and [grafana/provisioning/dashboards/dashboard.json](file:///Users/utkarshbansal/chest-xray-mlops/grafana/provisioning/dashboards/dashboard.json) defining API KPI stat counters, average request latencies, p95 latencies, and step duration details.
+    *   Updated [README.md](file:///Users/utkarshbansal/chest-xray-mlops/README.md) documenting docker execution boundaries and service ports.
+*   **Why we did it**:
+    *   **Automatic Provisioning**: Pre-configuring datasource and dashboard parameters guarantees that as soon as developers boot the container cluster, they have access to fully populated charts without manual setup.
+    *   **Standardized Observability**: Placing API KPI stats side-by-side with ML pipeline breakdown metrics speeds up diagnosing whether latency spikes originate from HTTP transport/deserialization or GPU/PyTorch forward operations.
+
+

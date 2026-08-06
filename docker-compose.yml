@@ -1,0 +1,46 @@
+services:
+  chest-xray-api:
+    image: chest-xray-api:v1
+    container_name: chest-xray-api
+
+    ports:
+      - "8000:8000"
+
+    volumes: 
+      - /home/ubuntu/models:/app/models
+
+    environment:
+      ACTIVE_MODEL: resnet50
+      INFERENCE__DEVICE: cpu
+      APP__ENVIRONMENT: production
+
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    depends_on:
+      - chest-xray-api
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/dashboard.json
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana-data:

@@ -130,6 +130,9 @@ watchfiles==1.2.0
     # via uvicorn
 websockets==16.0
     # via uvicorn
+prometheus-client==0.25.0
+    # via -r requirements/prod.in
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
+

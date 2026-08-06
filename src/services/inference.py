@@ -9,6 +9,11 @@ from src.pipeline.preprocessing import preprocess_image
 from src.pipeline.postprocessing import postprocess_outputs
 from src.schemas.predict import PredictionResult
 from src.utils.timing import time_block
+from src.metrics import (
+    observe_preprocessing_latency,
+    observe_model_inference_latency,
+    observe_postprocessing_latency,
+)
 
 logger = get_logger(__name__)
 
@@ -36,15 +41,36 @@ class InferenceService:
         with time_block() as preprocess_stats:
             target_size = self.settings.model.input_size
             preprocessed_tensor = preprocess_image(image, target_size=target_size)
+        
+        if self.settings.metrics.enabled:
+            observe_preprocessing_latency(
+                self.settings.model.name,
+                self.settings.model.version,
+                preprocess_stats['elapsed_ms'] / 1000.0
+            )
 
         # Step 2: Prediction
         with time_block() as predict_stats:
             logits = self.predictor.predict(preprocessed_tensor)
 
+        if self.settings.metrics.enabled:
+            observe_model_inference_latency(
+                self.settings.model.name,
+                self.settings.model.version,
+                predict_stats['elapsed_ms'] / 1000.0
+            )
+
         # Step 3: Postprocessing
         with time_block() as postprocess_stats:
             confidence_threshold = self.settings.inference.confidence_threshold
             result = postprocess_outputs(logits, confidence_threshold=confidence_threshold)
+
+        if self.settings.metrics.enabled:
+            observe_postprocessing_latency(
+                self.settings.model.name,
+                self.settings.model.version,
+                postprocess_stats['elapsed_ms'] / 1000.0
+            )
 
         total_end = time.perf_counter()
         total_time_ms = (total_end - total_start) * 1000.0
@@ -84,6 +110,13 @@ class InferenceService:
                     tensor = preprocess_image(img, target_size=target_size)
                 valid_items.append((name, tensor))
                 preprocess_latencies.append(p_stats["elapsed_ms"])
+                
+                if self.settings.metrics.enabled:
+                    observe_preprocessing_latency(
+                        self.settings.model.name,
+                        self.settings.model.version,
+                        p_stats['elapsed_ms'] / 1000.0
+                    )
             except Exception as e:
                 logger.warning(f"Batch item '{name}' failed preprocessing validation: {e}")
                 results[name] = f"Preprocessing failed: {e}"
@@ -115,6 +148,13 @@ class InferenceService:
                 with time_block() as pred_stats:
                     batch_logits = self.predictor.predict(batch_tensor)
                 predict_latencies.append(pred_stats["elapsed_ms"])
+                
+                if self.settings.metrics.enabled:
+                    observe_model_inference_latency(
+                        self.settings.model.name,
+                        self.settings.model.version,
+                        pred_stats['elapsed_ms'] / 1000.0
+                    )
             except Exception as e:
                 logger.error(f"Batch prediction forward pass failed: {e}")
                 for name in names:
@@ -130,6 +170,13 @@ class InferenceService:
                         res = postprocess_outputs(logit, confidence_threshold=confidence_threshold)
                     results[name] = res
                     postprocess_latencies.append(post_stats["elapsed_ms"])
+                    
+                    if self.settings.metrics.enabled:
+                        observe_postprocessing_latency(
+                            self.settings.model.name,
+                            self.settings.model.version,
+                            post_stats['elapsed_ms'] / 1000.0
+                        )
                 except Exception as e:
                     logger.error(f"Postprocessing failed for item '{name}': {e}")
                     results[name] = f"Postprocessing failed: {e}"

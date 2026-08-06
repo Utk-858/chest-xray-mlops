@@ -32,17 +32,22 @@ class InferenceConfig(BaseModel):
 class LoggingConfig(BaseModel):
     level: str = Field(default="INFO", pattern="^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$")
 
+class MetricsConfig(BaseModel):
+    enabled: bool = True
+
 class Settings(BaseSettings):
     app: AppConfig = AppConfig()
     active_model: str
     models: dict[str, ModelConfig] = Field(default_factory=dict)
     inference: InferenceConfig = InferenceConfig()
     logging: LoggingConfig = LoggingConfig()
+    metrics: MetricsConfig = MetricsConfig()
 
     model_config = SettingsConfigDict(
         env_nested_delimiter="__",
         env_prefix="",
     )
+
 
     @model_validator(mode="after")
     def validate_active_model_exists(self) -> "Settings":
