@@ -1,5 +1,6 @@
 services:
   chest-xray-api:
+    build : .
     image: chest-xray-api:v1
     container_name: chest-xray-api
 
