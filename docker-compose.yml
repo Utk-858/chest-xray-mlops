@@ -1,5 +1,6 @@
 services:
   chest-xray-api:
+    build: .                  # <--- Add this line so Compose builds your local code
     image: chest-xray-api:v1
     container_name: chest-xray-api
 
@@ -13,6 +14,7 @@ services:
       ACTIVE_MODEL: resnet50
       INFERENCE__DEVICE: cpu
       APP__ENVIRONMENT: production
+      METRICS__ENABLED: "true" # <--- Add this line to enable /metrics
 
     restart: unless-stopped
 
