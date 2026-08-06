@@ -1,0 +1,141 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+VU = 1, duration : 30sec
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 1       0.021825/s
+    checks_succeeded...: 100.00% 1 out of 1
+    checks_failed......: 0.00%   0 out of 1
+
+    ✓ status is 200
+
+    HTTP
+    http_req_duration..............: avg=44.22s min=44.22s med=44.22s max=44.22s p(90)=44.22s p(95)=44.22s
+      { expected_response:true }...: avg=44.22s min=44.22s med=44.22s max=44.22s p(90)=44.22s p(95)=44.22s
+    http_req_failed................: 0.00%  0 out of 1
+    http_reqs......................: 1      0.021825/s
+
+    EXECUTION
+    iteration_duration.............: avg=45.82s min=45.82s med=45.82s max=45.82s p(90)=45.82s p(95)=45.82s
+    iterations.....................: 1      0.021825/s
+    vus............................: 1      min=1                max=1
+    vus_max........................: 1      min=1                max=1
+
+    NETWORK
+    data_received..................: 312 B  6.80933310766505 B/s
+    data_sent......................: 253 kB 5.5 kB/s
+
+
+
+
+running (0m45.8s), 0/1 VUs, 1 complete and 0 interrupted iterations
+default ✓ [ 100% ] 1 VUs  30s
+
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: src/load_testing/scripts/predict.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 5 max VUs, 1m0s max duration (incl. graceful stop):
+              * default: 5 looping VUs for 30s (gracefulStop: 30s)
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 197     6.441282/s
+    checks_succeeded...: 100.00% 197 out of 197
+    checks_failed......: 0.00%   0 out of 197
+
+    ✓ status is 200
+
+    HTTP
+    http_req_duration..............: avg=764.22ms min=430.3ms  med=733.27ms max=1.77s p(90)=949.9ms  p(95)=1.02s
+      { expected_response:true }...: avg=764.22ms min=430.3ms  med=733.27ms max=1.77s p(90)=949.9ms  p(95)=1.02s
+    http_req_failed................: 0.00% 0 out of 197
+    http_reqs......................: 197   6.441282/s
+
+    EXECUTION
+    iteration_duration.............: avg=771.59ms min=431.73ms med=733.85ms max=1.95s p(90)=951.28ms p(95)=1.02s
+    iterations.....................: 197   6.441282/s
+    vus............................: 5     min=5        max=5
+    vus_max........................: 5     min=5        max=5
+
+    NETWORK
+    data_received..................: 62 kB 2.0 kB/s
+    data_sent......................: 50 MB 1.6 MB/s
+
+
+
+
+running (0m30.6s), 0/5 VUs, 197 complete and 0 interrupted iterations
+default ✓ [ 100% ] 5 VUs  30s
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: src/load_testing/scripts/predict.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 25 max VUs, 1m0s max duration (incl. graceful stop):
+              * default: 25 looping VUs for 30s (gracefulStop: 30s)
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 184    3.066442/s
+    checks_succeeded...: 97.82% 180 out of 184
+    checks_failed......: 2.17%  4 out of 184
+
+    ✗ status is 200
+      ↳  97% — ✓ 180 / ✗ 4
+
+    HTTP
+    http_req_duration..............: avg=3.7s  min=1.16s med=3.69s max=6.01s p(90)=4.29s p(95)=4.9s 
+      { expected_response:true }...: avg=3.67s min=1.16s med=3.69s max=6.01s p(90)=4.25s p(95)=4.31s
+    http_req_failed................: 2.17% 4 out of 184
+    http_reqs......................: 184   3.066442/s
+
+    EXECUTION
+    iteration_duration.............: avg=3.82s min=1.34s med=3.7s  max=8s    p(90)=4.45s p(95)=5.25s
+    iterations.....................: 184   3.066442/s
+    vus............................: 21    min=21       max=25
+    vus_max........................: 25    min=25       max=25
+
+    NETWORK
+    data_received..................: 56 kB 936 B/s
+    data_sent......................: 52 MB 865 kB/s
+
+
+
+
+running (1m00.0s), 00/25 VUs, 184 complete and 21 interrupted iterations
+default ✓ [ 100% ] 25 VUs  30s
+
+
+RESULTS
+
+| VUs | Avg Latency |  Req/sec | Errors |
+| --: | ----------: | -------: | -----: |
+|   1 |  **548 ms** | **1.75** |     0% |
+|   5 |  **778 ms** | **6.35** |     0% |
+|  25 |  **3.58 s** | **6.54** |     0% |
